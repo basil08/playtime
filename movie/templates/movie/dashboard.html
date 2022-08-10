@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% block document_title %}
+<title>Dashboard | PlayTime</title>
+{% endblock %}
+
+
+{% block sidebar %}
+{% endblock %}
+
+{% block main %}
+{% for movie in page_obj %}
+    <!-- {{ contact.full_name|upper }}<br> -->
+    {% include 'movie/movie-card.html' with movie=movie %}
+{% endfor %}
+
+<div class="pagination">
+    <span>
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1">&laquo; first</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a>
+        </li>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        </li>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock %}

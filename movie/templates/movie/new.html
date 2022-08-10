@@ -1,0 +1,46 @@
+{% extends 'layout.html' %}
+
+{% block document_title %}
+<title>New Movie | PlayTime</title>
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block main %}
+<div class="mt-2">
+  <div class="mt-2">
+    <h1>Create New Movie</h1>
+  </div>
+
+  <form action="{% url 'movie:new' %}" method="post">
+    {% csrf_token %}
+    {% for field in form %}
+    {% if field.id_for_label == 'id_have_watched' or field.id_for_label == 'id_on_watchlist' %}
+    <div class="form-check mb-3">
+      <div class="form-errors">
+        {{ field.errors }}
+      </div>
+      {{ field }}
+      <label for="{{ field.id_for_label }}">{{ field.label }} </label>
+      {% if field.help_text %}
+      <p class="form-text text-muted">{{ field.help_text|safe }}</p>
+      {% endif %}
+    </div>
+    {% else %}
+    <div class="form-floating mb-3">
+      <div class="form-errors">
+        {{ field.errors }}
+      </div>
+      {{ field }}
+      <label for="{{ field.id_for_label }}">{{ field.label }} </label>
+      {% if field.help_text %}
+      <p class="form-text text-muted">{{ field.help_text|safe }}</p>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,5 @@
+<div>
+  <a href="{% url 'post:home' user_id=user.id %}">All</a>
+  <a href="{% url 'post:starred' user_id=user.id %}">Starred</a>
+  <a href="{% url 'post:trash' user_id=user.id %}">Trash</a>
+</div>
