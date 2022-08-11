@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.core.paginator import Paginator
 from django.contrib import messages
 
@@ -31,7 +31,12 @@ def watchlist(request, username):
 
 @login_required
 def getMovie(request, movie_id):
-  return HttpResponse("MOVIE ID {}".format(movie_id))
+  try:
+    movie = Movie.objects.get(pk=movie_id)
+    return render(request, "movie/movie-page.html", { 'movie': movie })
+  except Http404:
+    messages.error(request, "Couldn't find movie with id {}".format(movie_id))
+    return render(request, "movie/movie-page.html")
 
 @login_required
 def newMovie(request):
@@ -54,5 +59,12 @@ def updateMovie(request):
   return HttpResponse("UPDATE MOVIE")
 
 @login_required
-def deleteMovie(request):
-  return HttpResponse("DELETE MOVIE")
+def deleteMovie(request, movie_id):
+  try:
+    movie = Movie.objects.get(pk=movie_id)
+    movie.delete()
+    messages.success(request, 'Deleted {}'.format(movie.title))
+    return redirect('movie:dashboard')
+  except Http404:
+    messages.error(request, "Couldn't find movie with id {}".format(movie_id))
+    return redirect('movie:dashboard')

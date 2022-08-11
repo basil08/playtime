@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block document_title %}
+<title>{{ movie.title }} | PlayTime</title>
+{% endblock %}
+
+
+{% block sidebar %}
+{% endblock %}
+
+{% block main %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="display-3">{{ movie.title }}</div>
+
+      <a href="{% url 'movie:delete' movie.id %}" class="btn btn-danger">Delete</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
