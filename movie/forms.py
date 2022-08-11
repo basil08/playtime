@@ -59,9 +59,12 @@ class CreateNewMovieForm(forms.ModelForm):
       raise forms.ValidationError("NO USER ID FOUND")
 
     img = self.cleaned_data['poster_image']
+    print(self.cleaned_data['poster_image'])
 
     if img:
       poster_image_url = save_image_file(img, img.image.filename, img.image.width, img.image.height, img.image.format.lower())
+      print("INSIDE")
+      print(poster_image_url)
       movie.poster_image = poster_image_url
     movie.created_by = created_by
     if commit:

@@ -11,6 +11,6 @@ urlpatterns = [
   path('<str:username>/watchlist/', views.watchlist, name='watchlist'),
   path('movie/<int:movie_id>/', views.getMovie, name='moviePage'),
   path('new/', views.newMovie, name='new'),
-  path('update/', views.updateMovie, name='update'),
+  path('update/<int:movie_id>/', views.updateMovie, name='update'),
   path('delete/<int:movie_id>/', views.deleteMovie, name='delete')
 ]

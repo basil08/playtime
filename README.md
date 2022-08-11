@@ -1,10 +1,20 @@
 ## DEV SPECS
 
+### TODO
+
+~1. Icons~
+~2. Sidebar~
+3. moviePage
+4. Dynamic quote; login page
+5. Use S3 for storing posters
+6.
+
+
 ### TARGET: MVP
 
 
-0. Authentication
-1. CRUD Movie Database
+~0. Authentication~
+~1. CRUD Movie Database~
 2. Add rating, reviews
 3. Search features
 
@@ -33,3 +43,5 @@
   q. created_ts: DateTime
   r. created_by: ForiegnKey
   s. last_updated: DateTime
+
+  t. poster_image: CharField

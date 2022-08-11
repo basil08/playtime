@@ -9,7 +9,7 @@
     </div>
     <div class="col-md-9">
       <div class="card-body">
-        <h5 class="card-title display-6">
+        <h5 class="card-title h4">
           <a href="{% url 'movie:moviePage' movie.id %}">
             {{ movie.title }}
           </a>
@@ -24,19 +24,91 @@
           </p>
           {% endif %}
         </div>
-        <div class="d-flex h5">
-          <p>{{ movie.runtime }} mins | {{ movie.imdb_rating }}</p>
+        <div class="d-flex justify-content-between h5">
+          <p>{{ movie.release_year }} | {{ movie.runtime }} mins</p>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffff00" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><path d="M132.4,190.7l50.4,32c6.5,4.1,14.5-2,12.6-9.5l-14.6-57.4a8.7,8.7,0,0,1,2.9-8.8l45.2-37.7c5.9-4.9,2.9-14.8-4.8-15.3l-59-3.8a8.3,8.3,0,0,1-7.3-5.4l-22-55.4a8.3,8.3,0,0,0-15.6,0l-22,55.4a8.3,8.3,0,0,1-7.3,5.4L31.9,94c-7.7.5-10.7,10.4-4.8,15.3L72.3,147a8.7,8.7,0,0,1,2.9,8.8L61.7,209c-2.3,9,7.3,16.3,15,11.4l46.9-29.7A8.2,8.2,0,0,1,132.4,190.7Z" fill="#ffff00" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path></svg>
+            {{ movie.imdb_rating }}
+          </p>
+        </div>
+        <p class="card-text border p-2 rounded-1">{% if movie.synopsis %}{{ movie.synopsis }}{% else %}---{% endif %}
+          <div class="d-flex flex-row justify-content-between">
+            {% if movie.have_watched == True %}
+            <div>
+              <p class="badge text-bg-success p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><polyline points="172 104 113.3 160 84 132" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></polyline><circle cx="128" cy="128" r="96" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></circle></svg>
+                Watched
+              </p>
+              <p class="badge text-bg-secondary p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><path d="M128,56C48,56,16,128,16,128s32,72,112,72,112-72,112-72S208,56,128,56Z" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path><circle cx="128" cy="128" r="40" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></circle></svg>
+                {{ movie.n_watches }}
+              </p>
+            </div>
+
+            {% else %}
+            <p class="badge p-1 text-bg-warning">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000000" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><circle cx="128" cy="128" r="96" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="16"></circle><line x1="160" y1="96" x2="96" y2="160" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line x1="160" y1="160" x2="96" y2="96" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line></svg>
+              Not watched
+            </p>
+            {% endif %}
+
+            {% if movie.on_watchlist == True %}
+            <p class="badge p-1 text-bg-warning">On watchlist</p>
+            {% endif %}
+
+            {% if movie.tags %}
+            <p class="card-text">
+              {% for tag in movie.tags|split:"," %}
+                <span class="badge text-bg-secondary">{{ tag }}</span>
+              {% endfor %}
+            </p>
+            {% endif %}
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <a href="{% url 'movie:delete' movie.id %}">Delete</a>
+            <a class="btn btn-primary" href="{% url 'movie:update' movie.id %}">Update</a>
+          </div>
+
+        </div>
+      </div>
+      {% else %}
+    <div class="col-md">
+      <div class="card-body">
+        <h5 class="card-title h4">
+          <a href="{% url 'movie:moviePage' movie.id %}">
+            {{ movie.title }}
+          </a>
+        </h5>
+        <div class="d-flex flex-row justify-content-between">
+          <p class="card-text">{{ movie.directors }}</p>
+          {% if movie.genres %}
+          <p>
+            {% for genre in movie.genres|split:"," %}
+              <span class="badge rounded-pill bg-primary">{{ genre }}</span>
+            {% endfor %}
+          </p>
+          {% endif %}
+        </div>
+        <div class="d-flex justify-content-between h5">
+          <p>{{ movie.release_year }} | {{ movie.runtime }} mins</p>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffff00" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><path d="M132.4,190.7l50.4,32c6.5,4.1,14.5-2,12.6-9.5l-14.6-57.4a8.7,8.7,0,0,1,2.9-8.8l45.2-37.7c5.9-4.9,2.9-14.8-4.8-15.3l-59-3.8a8.3,8.3,0,0,1-7.3-5.4l-22-55.4a8.3,8.3,0,0,0-15.6,0l-22,55.4a8.3,8.3,0,0,1-7.3,5.4L31.9,94c-7.7.5-10.7,10.4-4.8,15.3L72.3,147a8.7,8.7,0,0,1,2.9,8.8L61.7,209c-2.3,9,7.3,16.3,15,11.4l46.9-29.7A8.2,8.2,0,0,1,132.4,190.7Z" fill="#ffff00" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path></svg>
+            {{ movie.imdb_rating }}
+          </p>
         </div>
         <p class="card-text border p-2 rounded-1">{% if movie.synopsis %}{{ movie.synopsis }}{% else %}---{% endif %}
           <div class="d-flex flex-row justify-content-between">
             {% if movie.have_watched == True %}
             <p class="badge text-bg-success p-1">Watched</p>
             {% else %}
-            <p class="card-text">Not watched</p>
+            <p class="badge p-1 text-bg-warning">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000000" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><circle cx="128" cy="128" r="96" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="16"></circle><line x1="160" y1="96" x2="96" y2="160" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line x1="160" y1="160" x2="96" y2="96" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line></svg>
+              Not watched</p>
             {% endif %}
 
             {% if movie.on_watchlist == True %}
-            <p class="card-text text-bg-red">On watchlist</p>
+            <p class="badge p-1 text-bg-warning">On watchlist</p>
             {% endif %}
             {% if movie.tags %}
             <p class="card-text">
@@ -47,48 +119,9 @@
             {% endif %}
 
           </div>
-        </div>
-      </div>
-      {% else %}
-    <div class="col-md">
-      <div class="card-body">
-        <h5 class="card-title display-6">
-          <a href="{% url 'movie:moviePage' movie.id %}">
-            {{ movie.title }}
-          </a>
-        </h5>
-        <div class="d-flex flex-row justify-content-between">
-          <p class="card-text">{{ movie.directors }}</p>
-          {% if movie.genres %}
-          <p>
-            {% for genre in movie.genres|split:"," %}
-              <span class="badge rounded-pill bg-primary">{{ genre }}</span>
-            {% endfor %}
-          </p>
-          {% endif %}
-        </div>
-        <div class="d-flex h5">
-          <p>{{ movie.runtime }} mins | {{ movie.imdb_rating }}</p>
-        </div>
-        <p class="card-text border p-2 rounded-1">{% if movie.synopsis %}{{ movie.synopsis }}{% else %}---{% endif %}
-          <div class="d-flex flex-row justify-content-between">
-            {% if movie.have_watched == True %}
-            <p class="badge text-bg-success p-1">Watched</p>
-            {% else %}
-            <p class="card-text">Not watched</p>
-            {% endif %}
-
-            {% if movie.on_watchlist == True %}
-            <p class="card-text text-bg-red">On watchlist</p>
-            {% endif %}
-            {% if movie.tags %}
-            <p class="card-text">
-              {% for tag in movie.tags|split:"," %}
-                <span class="badge text-bg-secondary">{{ tag }}</span>
-              {% endfor %}
-            </p>
-            {% endif %}
-
+          <div class="d-flex justify-content-between">
+            <a href="{% url 'movie:delete' movie.id %}">Delete</a>
+            <a class="btn btn-primary" href="{% url 'movie:update' movie.id %}">Update</a>
           </div>
         </div>
       </div>

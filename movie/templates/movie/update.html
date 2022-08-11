@@ -11,10 +11,10 @@
 {% block main %}
 <div class="mt-2">
   <div class="mt-2">
-    <h1>Create New Movie</h1>
+    <h1>Update {{ title }}</h1>
   </div>
 
-  <form enctype="multipart/form-data" action="{% url 'movie:new' %}" method="post">
+  <form enctype="multipart/form-data" action="{% url 'movie:update' movie_id %}" method="post">
     {% csrf_token %}
     {% for field in form %}
     {% if field.id_for_label == 'id_have_watched' or field.id_for_label == 'id_on_watchlist' %}
@@ -55,6 +55,7 @@
     {% endif %}
     {% endfor %}
     <button type="submit" class="btn btn-primary">Submit</button>
+    <a href="{% url 'movie:dashboard' %}" class="btn btn-secondary">Cancel</a>
   </form>
 </div>
 {% endblock %}
