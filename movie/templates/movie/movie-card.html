@@ -1,25 +1,81 @@
 {% load static %}
+{% load split %}
 
 <div class="card mb-3" >
   <div class="row">
+    {% if movie.posterImage %}
     <div class="col-md-3">
       <img src="{% static '0.jpg' %}" class="img-fluid" alt="...">
     </div>
     <div class="col-md-9">
       <div class="card-body">
         <h5 class="card-title display-6">{{ movie.title }}</h5>
-        <div class="d-flex flex-row">
-          <p class="card-text">{{ movie.directors.all | join:"," }}</p>
-          <div>
-            {% for genre in movie.genres.all %}
-            <span>
-              {{ genre }}
-            </span>
+        <div class="d-flex flex-row justify-content-between">
+          <p class="card-text">{{ movie.directors }}</p>
+          <p>
+            {% for genre in movie.genres|split:"," %}
+              <span class="badge rounded-pill bg-primary">{{ genre }}</span>
             {% endfor %}
+          </p>
+        </div>
+        <div class="d-flex h5">
+          <p>{{ movie.runtime }} mins | {{ movie.imdb_rating }}</p>
+        </div>
+        <p class="card-text border p-2 rounded-1">{% if movie.synopsis %}{{ movie.synopsis }}{% else %}---{% endif %}
+          <div class="d-flex flex-row justify-content-between">
+            {% if movie.have_watched == True %}
+            <p class="badge text-bg-success p-1">Watched</p>
+            {% else %}
+            <p class="card-text">Not watched</p>
+            {% endif %}
+
+            {% if movie.on_watchlist == True %}
+            <p class="card-text text-bg-red">On watchlist</p>
+            {% endif %}
+            <p class="card-text">
+              {% for tag in movie.tags|split:"," %}
+                <span class="badge text-bg-secondary">{{ tag }}</span>
+              {% endfor %}
+            </p>
+
           </div>
         </div>
-        <p class="card-text">{% if movie.synopsis %}{{ movie.synopsis }}{% else %}---{% endif %}<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
       </div>
-    </div>
+      {% else %}
+    <div class="col-md">
+      <div class="card-body">
+        <h5 class="card-title display-6">{{ movie.title }}</h5>
+        <div class="d-flex flex-row justify-content-between">
+          <p class="card-text">{{ movie.directors }}</p>
+          <p>
+            {% for genre in movie.genres|split:"," %}
+              <span class="badge rounded-pill bg-primary">{{ genre }}</span>
+            {% endfor %}
+          </p>
+        </div>
+        <div class="d-flex h5">
+          <p>{{ movie.runtime }} mins | {{ movie.imdb_rating }}</p>
+        </div>
+        <p class="card-text border p-2 rounded-1">{% if movie.synopsis %}{{ movie.synopsis }}{% else %}---{% endif %}
+          <div class="d-flex flex-row justify-content-between">
+            {% if movie.have_watched == True %}
+            <p class="badge text-bg-success p-1">Watched</p>
+            {% else %}
+            <p class="card-text">Not watched</p>
+            {% endif %}
+
+            {% if movie.on_watchlist == True %}
+            <p class="card-text text-bg-red">On watchlist</p>
+            {% endif %}
+            <p class="card-text">
+              {% for tag in movie.tags|split:"," %}
+                <span class="badge text-bg-secondary">{{ tag }}</span>
+              {% endfor %}
+            </p>
+
+          </div>
+        </div>
+      </div>
+      {% endif %}
   </div>
 </div>

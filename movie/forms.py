@@ -11,6 +11,7 @@ class CreateNewMovieForm(forms.ModelForm):
       'synopsis',
       'release_year',
       'directors',
+      'runtime',
       'genres',
       'tags',
       'imdb_rating',

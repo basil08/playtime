@@ -7,6 +7,8 @@ from django.contrib import messages
 from movie.models import Movie
 from movie.forms import CreateNewMovieForm
 
+
+
 @login_required
 def index(request):
   return redirect("movie:dashboard")
@@ -14,7 +16,7 @@ def index(request):
 @login_required
 def dashboard(request):
   movies = Movie.objects.all()
-  paginator = Paginator(movies, 25) # 25 movie objects
+  paginator = Paginator(movies, 2)
 
   page_number = request.GET.get('page')
   page_obj = paginator.get_page(page_number)
