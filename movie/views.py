@@ -8,7 +8,6 @@ from movie.models import Movie
 from movie.forms import CreateNewMovieForm
 
 
-
 @login_required
 def index(request):
   return redirect("movie:dashboard")
@@ -37,7 +36,7 @@ def getMovie(request, movie_id):
 @login_required
 def newMovie(request):
   if request.method == 'POST':
-    form = CreateNewMovieForm(request.POST)
+    form = CreateNewMovieForm(request.POST, request.FILES)
     if form.is_valid():
       form.save(created_by=request.user)
       messages.success(request, "Movie saved successfully!")

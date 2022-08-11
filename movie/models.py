@@ -11,6 +11,7 @@ class Movie(models.Model):
   tags = models.CharField(max_length=400, null=True, blank=True)
   imdb_rating = models.FloatField(null=True, blank=True)
   runtime = models.FloatField(null=True, blank=True)
+  poster_image = models.CharField(max_length=300, null=True, blank=True)
 
   n_watches = models.IntegerField(null=True, blank=True)
   have_watched = models.BooleanField(default=False)

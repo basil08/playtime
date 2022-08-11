@@ -1,6 +1,19 @@
 from django import forms
-
+import time
 from movie.models import Movie
+
+def save_image_file(fp, name, width, height, extension='jpeg'):
+  if not name: name = int(time.time())
+  img_url = "img/posters/IMG{}_{}X{}.{}".format(name, width, height, extension)
+
+  # NOTE: A tiny hack to accomodate the img/ directory inside static/ AND
+  # access using {% static %} tag
+  # db only stores the part _after_ static (that is, relative to static/)
+  # AND NOT the absolute path relative to project root
+  with open('./static/' + img_url, 'wb+') as dest:
+    for chunk in fp.chunks():
+      dest.write(chunk)
+  return img_url
 
 class CreateNewMovieForm(forms.ModelForm):
   class Meta:
@@ -23,6 +36,7 @@ class CreateNewMovieForm(forms.ModelForm):
     labels = {
       'n_watches': 'Number of watches'
     }
+  poster_image = forms.ImageField(label='Poster Image', required=False)
 
   def __init__(self, *args, **kwargs):
     super(CreateNewMovieForm, self).__init__(*args, **kwargs)
@@ -37,11 +51,18 @@ class CreateNewMovieForm(forms.ModelForm):
           'class': 'form-check-input'
       })
 
+
   def save(self, commit=True, *args, **kwargs):
     movie = super(CreateNewMovieForm, self).save(commit=False)
     created_by = kwargs.pop('created_by', None)
     if not created_by:
       raise forms.ValidationError("NO USER ID FOUND")
+
+    img = self.cleaned_data['poster_image']
+
+    if img:
+      poster_image_url = save_image_file(img, img.image.filename, img.image.width, img.image.height, img.image.format.lower())
+      movie.poster_image = poster_image_url
     movie.created_by = created_by
     if commit:
       movie.save()

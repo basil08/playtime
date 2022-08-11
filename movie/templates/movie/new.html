@@ -13,7 +13,7 @@
     <h1>Create New Movie</h1>
   </div>
 
-  <form action="{% url 'movie:new' %}" method="post">
+  <form enctype="multipart/form-data" action="{% url 'movie:new' %}" method="post">
     {% csrf_token %}
     {% for field in form %}
     {% if field.id_for_label == 'id_have_watched' or field.id_for_label == 'id_on_watchlist' %}
@@ -23,6 +23,18 @@
       </div>
       {{ field }}
       <label for="{{ field.id_for_label }}">{{ field.label }} </label>
+      {% if field.help_text %}
+      <p class="form-text text-muted">{{ field.help_text|safe }}</p>
+      {% endif %}
+    </div>
+    {% else %}
+    {% if field.id_for_label == 'id_poster_image' %}
+    <div class="mb-3">
+      <div class="form-errors">
+        {{ field.errors }}
+      </div>
+      <label for="{{ field.id_for_label }}">{{ field.label }} </label>
+      {{ field }}
       {% if field.help_text %}
       <p class="form-text text-muted">{{ field.help_text|safe }}</p>
       {% endif %}
@@ -38,6 +50,7 @@
       <p class="form-text text-muted">{{ field.help_text|safe }}</p>
       {% endif %}
     </div>
+    {% endif %}
     {% endif %}
     {% endfor %}
     <button type="submit" class="btn btn-primary">Submit</button>
