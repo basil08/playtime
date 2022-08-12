@@ -14,7 +14,7 @@ def index(request):
 
 @login_required
 def dashboard(request):
-  movies = Movie.objects.all()
+  movies = Movie.objects.all().order_by('-created_ts')
   paginator = Paginator(movies, 8)
 
   page_number = request.GET.get('page')
@@ -63,35 +63,6 @@ def updateMovie(request, movie_id):
     messages.success(request, "{} updated successfully!".format(movie.title))
     return redirect("movie:dashboard")
   return render(request, "movie/update.html", { 'form': form, 'movie_id': movie_id, 'title': movie.title })
-
-  # if request.method == 'POST':
-  #   form = CreateNewMovieForm(request.POST, request.FILES)
-  #   if form.is_valid():
-  #     form.save(created_by=request.user)
-  #   else:
-  #     messages.error(request, "Errors in form!")
-  #     return render(request, "movie/update.html", { 'errors': form.errors })
-  # else:
-  #   movie = Movie.objects.get(pk=movie_id)
-  #   form = CreateNewMovieForm(
-  #     initial={
-  #       'title': movie.title,
-  #       'language': movie.language,
-  #       'synopsis': movie.synopsis,
-  #       'release_year': movie.release_year,
-  #       'directors': movie.directors,
-  #       'runtime': movie.runtime,
-  #       'genres': movie.genres,
-  #       'tags': movie.tags,
-  #       'imdb_rating': movie.imdb_rating,
-  #       'n_watches': movie.n_watches,
-  #       'first_watch': movie.first_watch,
-  #       'have_watched': movie.have_watched,
-  #       'on_watchlist': movie.on_watchlist
-  #     })
-
-  # return render(request, 'movie/update.html', { 'form': form, 'movie_id': movie_id, 'title': movie.title })
-
 
 @login_required
 def deleteMovie(request, movie_id):
