@@ -17,7 +17,7 @@
   <form enctype="multipart/form-data" action="{% url 'movie:update' movie_id %}" method="post">
     {% csrf_token %}
     {% for field in form %}
-    {% if field.id_for_label == 'id_have_watched' or field.id_for_label == 'id_on_watchlist' %}
+    {% if field.id_for_label == 'id_have_watched' or field.id_for_label == 'id_on_watchlist' or field.id_for_label == 'id_is_franchise' %}
     <div class="form-check mb-3">
       <div class="form-errors">
         {{ field.errors }}
@@ -54,7 +54,7 @@
     {% endif %}
     {% endif %}
     {% endfor %}
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Update</button>
     <a href="{% url 'movie:dashboard' %}" class="btn btn-secondary">Cancel</a>
   </form>
 </div>
