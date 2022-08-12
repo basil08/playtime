@@ -4,8 +4,8 @@ from django.http import HttpResponse, Http404
 from django.core.paginator import Paginator
 from django.contrib import messages
 
-from movie.models import Movie
-from movie.forms import CreateNewMovieForm
+from movie.models import Movie, Review
+from movie.forms import CreateNewMovieForm, CreateNewReviewForm
 
 
 @login_required
@@ -14,7 +14,7 @@ def index(request):
 
 @login_required
 def dashboard(request):
-  movies = Movie.objects.all()
+  movies = Movie.objects.all().order_by('-created_ts')
   paginator = Paginator(movies, 8)
 
   page_number = request.GET.get('page')
@@ -33,7 +33,8 @@ def watchlist(request, username):
 def getMovie(request, movie_id):
   try:
     movie = Movie.objects.get(pk=movie_id)
-    return render(request, "movie/movie-page.html", { 'movie': movie })
+    reviews = Review.objects.filter(movie=movie.id)
+    return render(request, "movie/movie-page.html", { 'movie': movie, 'reviews': reviews })
   except Http404:
     messages.error(request, "Couldn't find movie with id {}".format(movie_id))
     return render(request, "movie/movie-page.html")
@@ -64,35 +65,6 @@ def updateMovie(request, movie_id):
     return redirect("movie:dashboard")
   return render(request, "movie/update.html", { 'form': form, 'movie_id': movie_id, 'title': movie.title })
 
-  # if request.method == 'POST':
-  #   form = CreateNewMovieForm(request.POST, request.FILES)
-  #   if form.is_valid():
-  #     form.save(created_by=request.user)
-  #   else:
-  #     messages.error(request, "Errors in form!")
-  #     return render(request, "movie/update.html", { 'errors': form.errors })
-  # else:
-  #   movie = Movie.objects.get(pk=movie_id)
-  #   form = CreateNewMovieForm(
-  #     initial={
-  #       'title': movie.title,
-  #       'language': movie.language,
-  #       'synopsis': movie.synopsis,
-  #       'release_year': movie.release_year,
-  #       'directors': movie.directors,
-  #       'runtime': movie.runtime,
-  #       'genres': movie.genres,
-  #       'tags': movie.tags,
-  #       'imdb_rating': movie.imdb_rating,
-  #       'n_watches': movie.n_watches,
-  #       'first_watch': movie.first_watch,
-  #       'have_watched': movie.have_watched,
-  #       'on_watchlist': movie.on_watchlist
-  #     })
-
-  # return render(request, 'movie/update.html', { 'form': form, 'movie_id': movie_id, 'title': movie.title })
-
-
 @login_required
 def deleteMovie(request, movie_id):
   try:
@@ -103,3 +75,52 @@ def deleteMovie(request, movie_id):
   except Http404:
     messages.error(request, "Couldn't find movie with id {}".format(movie_id))
     return redirect('movie:dashboard')
+
+# REVIEW
+
+@login_required
+def createReview(request, movie_id):
+  movie = get_object_or_404(Movie, pk=movie_id)
+  if request.method == 'POST':
+    form = CreateNewReviewForm(request.POST)
+    if form.is_valid():
+      form.save(created_by=request.user, movie=movie)
+      movie.is_reviewed = True
+      movie.save()
+      messages.success(request, "Review saved successfully!")
+      return redirect('movie:dashboard')
+    else:
+      messages.error(request, "Errors in form!")
+      return render(request, "movie/newReview.html", { 'errors': form.errors })
+  else:
+    form = CreateNewReviewForm()
+  return render(request, 'movie/newReview.html', { 'form': form, 'movie': movie })
+
+@login_required
+def deleteReview(request, review_id):
+  try:
+    review = get_object_or_404(Review, pk=review_id)
+    reviews = Review.objects.filter(movie=review.movie)
+
+    # make sure that there are no other reviews for this movie
+    # only then, set movie.is_reviewed to False
+    if len(reviews) == 1:
+      movie = get_object_or_404(Movie, pk=review.movie.id)
+      movie.is_reviewed = False
+      movie.save()
+    review.delete()
+    messages.success(request, 'Deleted {}'.format(review_id))
+    return redirect('movie:dashboard')
+  except Http404:
+    messages.error(request, "Couldn't find review with id {}".format(review_id))
+    return redirect('movie:dashboard')
+
+@login_required
+def updateReview(request, review_id):
+  review = get_object_or_404(Review, pk=review_id)
+  form = CreateNewReviewForm(request.POST or None, instance=review)
+  if form.is_valid():
+    form.save(created_by=request.user)
+    messages.success(request, "Review for {} updated successfully!".format(review.movie))
+    return redirect("movie:dashboard")
+  return render(request, "movie/updateReview.html", { 'form': form, 'review': review })

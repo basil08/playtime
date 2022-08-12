@@ -1,4 +1,7 @@
 {% extends 'layout.html' %}
+{% load split %}
+{% load static %}
+{% load embed_video_tags %}
 
 {% block document_title %}
 <title>{{ movie.title }} | PlayTime</title>
@@ -13,9 +16,128 @@
 <div class="container">
   <div class="row">
     <div class="col">
-      <div class="display-3">{{ movie.title }}</div>
+      <div class="d-flex justify-content-start">
+        <div class="display-3">{{ movie.title }}</div>
+        {% if movie.genres %}
+        <div class="d-flex flex-column">
+          <div>&nbsp;</div>
+          <div>&nbsp;</div>
+          <p>
+            {% for genre in movie.genres|split:"," %}
+              <span class="badge rounded-pill bg-primary">{{ genre }}</span>
+            {% endfor %}
+          </p>
+        </div>
+        {% endif %}
 
-      <a href="{% url 'movie:delete' movie.id %}" class="btn btn-danger">Delete</a>
+      </div>
+      <div class="d-flex justify-content-between">
+        <a href="{% url 'movie:update' movie.id %}" class="btn btn-primary">Update</a>
+        <a href="{% url 'movie:delete' movie.id %}" class="btn btn-danger">Delete</a>
+      </div>
+      <hr />
+      <div class="container">
+        <div class="row">
+          {% if movie.poster_image %}
+          <div class="col-md-3">
+            <img src="{% static movie.poster_image %}" class="img-fluid" alt="...">
+          </div>
+          {% endif %}
+          <div class="col-md-9">
+            <div class="d-flex justify-content-between">
+              <div class="h5">
+                {{ movie.release_year }} | {{ movie.runtime}} minutes
+              </div>
+              <p class="h5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffff00" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><path d="M132.4,190.7l50.4,32c6.5,4.1,14.5-2,12.6-9.5l-14.6-57.4a8.7,8.7,0,0,1,2.9-8.8l45.2-37.7c5.9-4.9,2.9-14.8-4.8-15.3l-59-3.8a8.3,8.3,0,0,1-7.3-5.4l-22-55.4a8.3,8.3,0,0,0-15.6,0l-22,55.4a8.3,8.3,0,0,1-7.3,5.4L31.9,94c-7.7.5-10.7,10.4-4.8,15.3L72.3,147a8.7,8.7,0,0,1,2.9,8.8L61.7,209c-2.3,9,7.3,16.3,15,11.4l46.9-29.7A8.2,8.2,0,0,1,132.4,190.7Z" fill="#ffff00" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path></svg>
+                {{ movie.imdb_rating }}
+              </p>
+            </div>
+            <p class="h5">
+              Directed by: {{ movie.directors|split:","|join:", "}}
+            </p>
+            <div class="d-flex justify-content-between">
+
+              {% if movie.release_date %}
+              <p>Release date: {{ movie.release_date }} </p>
+            {% endif %}
+
+            {% if movie.distributor %}
+              <p>Distributed by: {{ movie.distributor }}</p>
+            {% endif %}
+          </div>
+          <div class="d-flex justify-content-between">
+            {% if movie.music_by %}
+            <p>Music by: {{ movie.music_by }}</p>
+            {% endif %}
+            {% if movie.based_on %}
+            <p>Based on: {{ movie.based_on }}</p>
+            {% else %}
+            <p>Original story</p>
+            {% endif %}
+          </div>
+
+          {% if movie.is_franchise %}
+          <div class="mb-2">
+            Franchise movies: {{ movie.franchise_movies|split:","|join:", "}}
+          </div>
+          {% endif %}
+
+            {% if movie.tags %}
+            <p class="">
+              {% for tag in movie.tags|split:"," %}
+                <span class="badge text-bg-secondary">{{ tag }}</span>
+              {% endfor %}
+            </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+
+      <hr />
+
+      {% if movie.synopsis %}
+      <h5>Synopsis</h5>
+      <div class="border p-2">
+        {{ movie.synopsis }}
+      </div>
+      {% endif %}
+      <hr />
+      <div>
+        {% if movie.trailer_video %}
+        <div class="h5">Movie Trailer</div>
+        <div class="d-flex justify-content-center">
+          {% video movie.trailer_video 'small' %}
+        </div>
+        {% else %}
+        <p>No trailer video available</p>
+        {% endif %}
+      </div>
+      <hr />
+
+      <div>
+        <div class="h5">Reviews</div>
+        {% include 'review-list.html' with reviews=reviews %}
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <p>
+          Created by: {{ movie.created_by }}
+        </p>
+        <p>
+          {% if movie.last_updated %}
+          Last updated: {{ movie.last_updated }}
+          {% else %}
+          Created at: {{ movie.created_ts }}
+          {% endif %}
+        </p>
+      </div>
+
+
+
+
+
     </div>
   </div>
 </div>
