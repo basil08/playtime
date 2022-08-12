@@ -9,6 +9,10 @@
 5. Use S3 for storing posters
 6. Add markdown support for reviews
 
+### IMPROVEMENTS?
+
+1. Add image upload feature to reviews
+
 ### TARGET: MVP
 
 ~0. Authentication~
@@ -55,3 +59,12 @@
   z. franchise_movies
   aa. release_date
   ab. based_on
+
+2. Review
+  a. title
+  b. text
+  c. movie
+  d. rating
+  e. created_ts
+  f. created_by
+  g. last_updated
