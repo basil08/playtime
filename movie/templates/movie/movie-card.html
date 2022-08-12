@@ -32,6 +32,7 @@
           </p>
         </div>
         <p class="card-text border p-2 rounded-1">{% if movie.synopsis %}{{ movie.synopsis }}{% else %}---{% endif %}
+          
           <div class="d-flex flex-row justify-content-between">
             {% if movie.have_watched == True %}
             <div>
@@ -43,6 +44,12 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><path d="M128,56C48,56,16,128,16,128s32,72,112,72,112-72,112-72S208,56,128,56Z" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path><circle cx="128" cy="128" r="40" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></circle></svg>
                 {{ movie.n_watches }}
               </p>
+              {% if movie.is_reviewed %}
+              <p class="badge text-bg-success p-1">Reviewed</p>
+              {% else %}
+              <p class="badge text-bg-secondary p-1">Not Reviewed</p>
+              {% endif %}
+
             </div>
 
             {% else %}
@@ -67,7 +74,12 @@
 
           <div class="d-flex justify-content-between">
             <a href="{% url 'movie:delete' movie.id %}">Delete</a>
-            <a class="btn btn-primary" href="{% url 'movie:update' movie.id %}">Update</a>
+            <div>
+              <a class="btn btn-primary" href="{% url 'movie:createReview' movie.id %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000000" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><polygon points="128 160 96 160 96 128 192 32 224 64 128 160" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></polygon><line x1="168" y1="56" x2="200" y2="88" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><path d="M216,120v88a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V48a8,8,0,0,1,8-8h88" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path></svg>
+                Write Review</a>
+              <a class="btn btn-primary" href="{% url 'movie:update' movie.id %}">Update</a>
+            </div>
           </div>
 
         </div>

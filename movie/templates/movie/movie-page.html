@@ -38,9 +38,11 @@
       <hr />
       <div class="container">
         <div class="row">
+          {% if movie.poster_image %}
           <div class="col-md-3">
             <img src="{% static movie.poster_image %}" class="img-fluid" alt="...">
           </div>
+          {% endif %}
           <div class="col-md-9">
             <div class="d-flex justify-content-between">
               <div class="h5">
@@ -106,13 +108,19 @@
         {% if movie.trailer_video %}
         <div class="h5">Movie Trailer</div>
         <div class="d-flex justify-content-center">
-          {% video movie.trailer_video 'medium' %}
+          {% video movie.trailer_video 'small' %}
         </div>
         {% else %}
         <p>No trailer video available</p>
         {% endif %}
       </div>
       <hr />
+
+      <div>
+        <div class="h5">Reviews</div>
+        {% include 'review-list.html' with reviews=reviews %}
+      </div>
+
       <div class="d-flex justify-content-between">
         <p>
           Created by: {{ movie.created_by }}

@@ -1,6 +1,6 @@
 from django import forms
 import time
-from movie.models import Movie
+from movie.models import Movie, Review
 
 def save_image_file(fp, name, width, height, extension='jpeg'):
   if not name: name = int(time.time())
@@ -35,7 +35,6 @@ class CreateNewMovieForm(forms.ModelForm):
       'on_watchlist',
       'music_by',
       'distributor',
-      'trailer_url',
       'trailer_video',
       'is_franchise',
       'franchise_movies',
@@ -75,3 +74,46 @@ class CreateNewMovieForm(forms.ModelForm):
     if commit:
       movie.save()
     return movie
+
+
+class CreateNewReviewForm(forms.ModelForm):
+  class Meta:
+    model = Review
+    fields = (
+      'title',
+      'text',
+      'rating'
+    )
+
+  def __init__(self, *args, **kwargs):
+    super(CreateNewReviewForm, self).__init__(*args, **kwargs)
+    for field in iter(self.fields):
+      self.fields[field].widget.attrs.update({
+        'class': 'form-control',
+        'placeholder': None
+      })
+      if field == 'text':
+        print('hi')
+        self.fields[field].widget.attrs.update({
+          'rows': 12,
+          'class': 'form-control h-100'
+        })
+
+
+  def save(self, commit=True, *args, **kwargs):
+    review = super(CreateNewReviewForm, self).save(commit=False)
+    created_by = kwargs.pop('created_by', None)
+    movie = kwargs.pop('movie', None)
+
+    if not created_by:
+      raise forms.ValidationError("NO USER ID FOUND")
+    # if not movie:
+    #   raise forms.ValidationError("NO MOVIE TO WRITE REVIEW FOR")
+
+    review.created_by = created_by
+    if movie:
+      review.movie = movie
+
+    if commit:
+      review.save()
+    return review

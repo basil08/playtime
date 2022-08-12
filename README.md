@@ -4,21 +4,23 @@
 
 ~1. Icons~
 ~2. Sidebar~
-3. moviePage
+~3. moviePage~
 4. Dynamic quote; login page
 5. Use S3 for storing posters
-6.
-
+6. Add markdown support for reviews
 
 ### TARGET: MVP
 
-
 ~0. Authentication~
 ~1. CRUD Movie Database~
-2. Add rating, reviews
+~2. Add rating, reviews~
 3. Search features
+4. Public watchlog
+5. Public watchlist
 
+### BUGS
 
+1. Update movie details fails if new poster is added
 
 ### MODELS
 
@@ -45,3 +47,11 @@
   s. last_updated: DateTime
 
   t. poster_image: CharField
+  u. is_reviewed:
+  v. distributor
+  w. music_by
+  x. trailer_video
+  y. is_franchise
+  z. franchise_movies
+  aa. release_date
+  ab. based_on
